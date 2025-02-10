@@ -1,49 +1,48 @@
 let noButtonMoved = false;
 
-document.getElementById('yesButton').onclick = handleClick;
-document.getElementById('noButton').onclick = handleClick;
+// Store user name when clicking login
+document.addEventListener("DOMContentLoaded", function () {
+    let loginButton = document.getElementById("loginButton");
+    let nameInput = document.getElementById("nameInput");
 
-function handleClick(event) {
-    event.preventDefault(); // Prevent the default action (navigation)
-
-    if (event.target.id === 'yesButton') {
-        window.location.href = 'yes.html'; // Redirect to yes.html
-    } else if (event.target.id === 'noButton') {
-        moveNoButton(); // Move the noButton to a random position
-        noButtonMoved = true; // Set the flag to true
+    if (loginButton && nameInput) {
+        loginButton.addEventListener("click", function () {
+            let userName = nameInput.value.trim(); 
+            if (userName !== "") {
+                localStorage.setItem("userName", userName); // Save the name
+                window.location.href = "yes.html"; // Redirect to next page
+            } else {
+                alert("Please enter your name.");
+            }
+        });
     }
+});
 
-    if (!noButtonMoved) {
-        swapButtons(); // Swap the buttons only if noButton is not moved
-    }
+// Handle button interactions
+document.getElementById('yesButton')?.addEventListener("click", () => {
+    window.location.href = "yes.html"; // Redirect to yes.html
+});
 
-    showHeart(event.clientX, event.clientY); // Show heart animation at the click position
-}
+document.getElementById('noButton')?.addEventListener("click", (event) => {
+    event.preventDefault();
+    moveNoButton();
+    noButtonMoved = true;
+    showHeart(event.clientX, event.clientY);
+});
 
-function swapButtons() {
-    let yesButton = document.getElementById('yesButton');
-    let noButton = document.getElementById('noButton');
-
-    // Swap the text
-    let tempText = yesButton.innerText;
-    yesButton.innerText = noButton.innerText;
-    noButton.innerText = tempText;
-
-    // Swap the links
-    let tempHref = yesButton.href;
-    yesButton.href = noButton.href;
-    noButton.href = tempHref;
-}
-
+// Function to move the "No" button randomly
 function moveNoButton() {
     let noButton = document.getElementById('noButton');
-    let x = Math.floor(Math.random() * window.innerWidth);
-    let y = Math.floor(Math.random() * window.innerHeight);
-    noButton.style.position = 'absolute';
-    noButton.style.left = `${x}px`;
-    noButton.style.top = `${y}px`;
+    if (noButton) {
+        let x = Math.floor(Math.random() * window.innerWidth);
+        let y = Math.floor(Math.random() * window.innerHeight);
+        noButton.style.position = 'absolute';
+        noButton.style.left = `${x}px`;
+        noButton.style.top = `${y}px`;
+    }
 }
 
+// Function to show a heart animation
 function showHeart(x, y) {
     const heart = document.createElement('div');
     heart.className = 'heart';
@@ -52,8 +51,7 @@ function showHeart(x, y) {
     heart.style.top = `${y}px`;
     document.body.appendChild(heart);
 
-    // Remove the heart after the animation ends
-    heart.addEventListener('animationend', () => {
+    setTimeout(() => {
         heart.remove();
-    });
+    }, 1000);
 }
